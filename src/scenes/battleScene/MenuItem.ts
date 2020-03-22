@@ -7,6 +7,7 @@ export class MenuItem extends Phaser.GameObjects.Text {
 
   public select() {
     this.setColor("#f8ff38");
+    this.scene.events.emit("ActiveMenuChange");
   }
 
   public deselect() {

@@ -118,9 +118,11 @@ export class WorldScene extends Phaser.Scene {
     // Horizontal movement
     if (this.cursors?.left?.isDown) {
       this.player.setVelocityX(-80);
+      this.player.flipX = true;
       this.player.anims.play("left", true);
     } else if (this.cursors?.right?.isDown) {
       this.player.setVelocityX(80);
+      this.player.flipX = false;
       this.player.anims.play("right", true);
     } else if (this.cursors?.up?.isDown) {
       this.player.setVelocityY(-80);

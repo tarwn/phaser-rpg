@@ -43,6 +43,8 @@ export class BattleScene extends Phaser.Scene {
   }
 
   public nextTurn() {
+    this.units.forEach(u => u.stepBack());
+
     if (this.checkEndBattle()) {
       this.endBattle();
       return;
@@ -57,12 +59,14 @@ export class BattleScene extends Phaser.Scene {
 
     if (this.units[this.index]) {
       if (this.units[this.index] instanceof PlayerCharacter) {
+        this.units[this.index].stepForward();
         this.events.emit("PlayerSelect", this.index);
       } else {
         let r = -1;
         do {
           r = Math.floor(Math.random() * this.heroes.length);
         } while (!this.heroes[r].living);
+        this.units[this.index].stepForward();
         this.units[this.index].attack(this.heroes[r]);
         this.time.addEvent({ delay: 3000, callback: this.nextTurn, callbackScope: this });
       }

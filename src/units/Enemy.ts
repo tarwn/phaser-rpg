@@ -11,7 +11,7 @@ export class Enemy extends Unit {
     hp: number,
     damage: number
   ) {
-    super(scene, x, y, texture, frame, type, hp, damage);
+    super(scene, x, y, 20, texture, frame, type, hp, damage);
     this.setScale(2);
   }
 }

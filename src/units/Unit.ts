@@ -8,11 +8,15 @@ export class Unit extends Phaser.GameObjects.Sprite {
   damage: number;
   living: boolean;
   menuItem: MenuItem | null;
+  activeX: number;
+  originalX: number;
+  originalY: number;
 
   constructor(
     scene: Phaser.Scene,
     x: number,
     y: number,
+    activeX: number,
     texture: string,
     frame: string | number | undefined,
     type: string,
@@ -25,10 +29,21 @@ export class Unit extends Phaser.GameObjects.Sprite {
     this.damage = damage;
     this.living = true;
     this.menuItem = null;
+    this.activeX = activeX;
+    this.originalX = x;
+    this.originalY = y;
   }
 
   public setMenuItem(item: any) {
     this.menuItem = item;
+  }
+
+  public stepForward() {
+    this.setX(this.originalX + this.activeX);
+  }
+
+  public stepBack() {
+    this.setX(this.originalX);
   }
 
   public attack(target: Unit) {

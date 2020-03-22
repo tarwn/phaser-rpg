@@ -6,6 +6,15 @@ import { Menu } from "./battleScene/Menu";
 import { BattleScene } from "./BattleScene";
 import { Message } from "./battleScene/Message";
 
+const dimensions = {
+  menuWidth: 90,
+  menuHeight: 100,
+  menuSelectionHeight: 20,
+  menuSelectionVisibleHeight: 16,
+  menuSelectionMargin: 3,
+  menuTextMargin: 3
+};
+
 export class UIScene extends Phaser.Scene {
   menus!: Phaser.GameObjects.Container;
   heroesMenu!: HeroesMenu;
@@ -15,6 +24,9 @@ export class UIScene extends Phaser.Scene {
   battleScene!: BattleScene;
   message!: Message;
   graphics!: Phaser.GameObjects.Graphics;
+  selection!: Phaser.GameObjects.Graphics;
+  priorMenu: Menu | null = null;
+  selectionRect: Phaser.Geom.Rectangle | null = null;
 
   constructor() {
     super("UIScene");
@@ -30,6 +42,8 @@ export class UIScene extends Phaser.Scene {
     this.graphics.fillRect(95, 150, 90, 100);
     this.graphics.strokeRect(188, 150, 130, 100);
     this.graphics.fillRect(188, 150, 130, 100);
+
+    this.selection = this.add.graphics();
 
     this.menus = this.add.container(0, 0);
     this.heroesMenu = new HeroesMenu(this, 195, 153);
@@ -49,11 +63,40 @@ export class UIScene extends Phaser.Scene {
     this.events.on("SelectEnemies", this.onSelectEnemies, this);
     this.events.on("Enemy", this.onEnemy, this);
     this.sys.events.on("wake", this.createMenu, this);
+    this.events.on("ActiveMenuChange", this.onActiveMenuChange, this);
 
     this.message = new Message(this, this.battleScene.events);
     this.add.existing(this.message);
 
     this.createMenu();
+  }
+
+  onActiveMenuChange() {
+    console.log("active menu change");
+    if (this.currentMenu) {
+      const loc = {
+        x: this.currentMenu.x - dimensions.menuTextMargin,
+        y: dimensions.menuSelectionHeight * this.currentMenu.menuItemIndex + this.currentMenu.y - 1,
+        width: dimensions.menuWidth - 2 * dimensions.menuSelectionMargin,
+        height: dimensions.menuSelectionVisibleHeight
+      };
+      if (!this.selectionRect) {
+        console.log("create");
+        this.selectionRect = new Phaser.Geom.Rectangle(loc.x, loc.y, loc.width, loc.height);
+        this.selection.fillStyle(0xffffff, 0.15);
+        this.selection.fillRectShape(this.selectionRect);
+      } else {
+        console.log("move");
+        this.selectionRect.setPosition(loc.x, loc.y);
+        this.selection.clear();
+        this.selection.fillStyle(0xffffff, 0.15);
+        this.selection.fillRectShape(this.selectionRect);
+      }
+    } else {
+      console.log("clear");
+      this.selectionRect = null;
+      this.selection.clear();
+    }
   }
 
   createMenu() {
@@ -63,7 +106,6 @@ export class UIScene extends Phaser.Scene {
   }
 
   onKeyInput(event: any) {
-    console.log(this.currentMenu);
     if (this.currentMenu) {
       switch (event.code) {
         case "ArrowUp":
@@ -83,10 +125,15 @@ export class UIScene extends Phaser.Scene {
     }
   }
 
+  changeActiveMenu(activeMenu: Menu | null) {
+    this.currentMenu = activeMenu;
+    this.events.emit("ActiveMenuChange");
+  }
+
   onPlayerSelect(id: number) {
     this.heroesMenu.select(id);
     this.actionsMenu.select(0);
-    this.currentMenu = this.actionsMenu;
+    this.changeActiveMenu(this.actionsMenu);
   }
 
   onSelectEnemies() {
@@ -95,11 +142,10 @@ export class UIScene extends Phaser.Scene {
   }
 
   onEnemy(index: number) {
-    console.log("onEnemy");
     this.heroesMenu.deselect();
     this.actionsMenu.deselect();
     this.enemiesMenu.deselect();
-    this.currentMenu = null;
+    this.changeActiveMenu(null);
     this.battleScene.receivePlayerSelection("attack", index);
   }
 
