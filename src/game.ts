@@ -1,35 +1,24 @@
-import * as Phaser from 'phaser';
+import * as Phaser from "phaser";
+import { BootScene } from "./scenes/BootScene";
+import { WorldScene } from "./scenes/WorldScene";
+import { BattleScene } from "./scenes/BattleScene";
+import { UIScene } from "./scenes/UIScene";
 
-class Game extends Phaser.Game {
-  constructor()
-  {
-    super({
-      width: 800,
-      height: 600,
-      scene: [Level1]
-    })
-  }
-}
+const config = {
+  type: Phaser.AUTO,
+  parent: "content",
+  width: 320,
+  height: 240,
+  zoom: 2,
+  pixelArt: true,
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 0 },
+      debug: true
+    }
+  },
+  scene: [BootScene, WorldScene, BattleScene, UIScene]
+};
 
-class Level1 extends Phaser.Scene {
-  pika!: Phaser.GameObjects.Sprite;
-
-  constructor()
-  {
-    super('Level1');
-  }
-
-  preload() {
-    this.load.image('pika', 'images/pika.png');
-  }
-
-  create() {
-    this.pika = this.add.sprite(400,300,'pika');
-  }
-
-  update() {
-    this.pika.rotation += .01;
-  }
-}
-
-const game = new Game();
+new Phaser.Game(config);

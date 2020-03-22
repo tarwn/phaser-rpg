@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "parcel build src/index.html src/images/* --public-url ./",
-    "watch": "parcel watch src/index.html src/images/*",
-    "start": "parcel serve src/index.html src/images/*",
+    "build": "parcel build src/index.html --public-url ./",
+    "watch": "parcel watch src/index.html",
+    "start": "parcel serve src/index.html",
     "clean": "rm -R -v dist/*",
-    "test": "eslint src"
+    "test": "eslint src/**/*.ts"
   },
   "author": "",
   "license": "MIT",
@@ -23,7 +23,15 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "parcel": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.3.1",
     "prettier": "^1.19.1",
     "typescript": "^3.8.3"
+  },
+  "staticFiles": {
+    "staticPath": [ {
+      "staticPath": "assets",
+      "staticOutDir": "assets"
+      }],
+    "watcherGlob": "**"
   }
 }
