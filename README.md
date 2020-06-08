@@ -5,6 +5,7 @@ This uses:
 * Typescript 3.8
 * ESLint
 * Parcel
+* Gihub Actions w/ Deploy to Gihub Pages
 
 To start w/ watch + dev server: `npm run start`
 
