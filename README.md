@@ -14,6 +14,4 @@ To start w/ watch + dev server: `npm run start`
 
 http://tarwn.github.io/phaser-rpg
 
-
-<iframe src="http://tarwn.github.io/phaser-rpg" width="640" height="480"></iframe>
-
+[![Screenshot from Sample Game](./example.png)](http://tarwn.github.io/phaser-rpg)
